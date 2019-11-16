@@ -12,7 +12,7 @@
             <#if currentUser??>
                 <#if currentUser.author>
                     <li class="nav-item">
-                        <a class="nav-link" href="/tags">Tags</a>
+                        <a class="nav-link" href="/tags/0">Tags</a>
                     </li>
                 </#if>
                 <#if currentUser.admin>

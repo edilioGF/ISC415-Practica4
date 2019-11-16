@@ -193,5 +193,6 @@ public class ArticleRoute {
             response.redirect("/article/view/" + request.params("id"));
             return "";
         });
+
     }
 }

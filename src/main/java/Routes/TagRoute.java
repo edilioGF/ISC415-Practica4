@@ -2,11 +2,13 @@ package Routes;
 
 import Handlers.ArticleHandler;
 import Handlers.TagHandler;
+import Models.Article;
 import Models.Tag;
 import Utils.Filters;
 import spark.ModelAndView;
 import spark.template.freemarker.FreeMarkerEngine;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.UUID;
 
@@ -19,10 +21,18 @@ public class TagRoute {
         Map<String, Object> responseData = new HashMap<>();
 
         Filters.filterAuthor("/tags");
-        get("/tags", (request, response) -> {
+        get("/tags/:id", (request, response) -> {
 
             responseData.put("currentUser", request.session().attribute("currentUser"));
             responseData.put("tags", TagHandler.getInstance().findAll());
+
+            String id = request.params("id");
+            if(id.equalsIgnoreCase("0")){
+                responseData.put("articles", new HashSet<>());
+            } else {
+                Tag tag = TagHandler.getInstance().find(id);
+                responseData.put("articles", tag.getArticles());
+            }
 
             return new FreeMarkerEngine().render(new ModelAndView(responseData, "tags.ftl"));
         });

@@ -1,9 +1,6 @@
 package Models;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
 
@@ -13,7 +10,8 @@ public class Tag implements Serializable {
     @Id
     private String id;
     private String name;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "ARTICLE_TAG", joinColumns = @JoinColumn(name = "TAGS_ID"), inverseJoinColumns = @JoinColumn(name = "ARTICLES_ID"))
     private Set<Article> articles;
 
 
