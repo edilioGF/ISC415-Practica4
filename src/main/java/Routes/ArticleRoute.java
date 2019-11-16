@@ -2,12 +2,11 @@ package Routes;
 
 import Handlers.ArticleHandler;
 import Handlers.CommentHandler;
+import Handlers.RecommendationHandler;
 import Handlers.TagHandler;
-import Models.Article;
-import Models.Comment;
-import Models.Tag;
-import Models.User;
+import Models.*;
 import Utils.Filters;
+import Utils.Utils;
 import spark.ModelAndView;
 import spark.template.freemarker.FreeMarkerEngine;
 
@@ -26,10 +25,18 @@ public class ArticleRoute {
         get("/article/view/:id", (request, response) -> {
 
             String id = request.params("id");
-
             User currentUser = request.session().attribute("currentUser");
+            Article article = ArticleHandler.getInstance().find(id);
+            Recommendation recommendation = RecommendationHandler.getInstance().find(new RecommendationId(article, currentUser));
+            Boolean userRecomendation = recommendation != null ? recommendation.getLike() : null;
+            int likesTotal = RecommendationHandler.getInstance().numberOfRecommendations(article, true);
+            int dislikesTotal = RecommendationHandler.getInstance().numberOfRecommendations(article, false);
+
             responseData.put("currentUser", currentUser);
-            responseData.put("article", ArticleHandler.getInstance().find(id));
+            responseData.put("article", article);
+            responseData.put("like", String.valueOf(userRecomendation));
+            responseData.put("likesTotal", likesTotal);
+            responseData.put("dislikesTotal", dislikesTotal);
 
             return new FreeMarkerEngine().render(new ModelAndView(responseData, "view_article.ftl"));
         });
@@ -127,6 +134,8 @@ public class ArticleRoute {
             User currentUser = request.session().attribute("currentUser");
             String id = request.params("id");
             Article article = ArticleHandler.getInstance().find(id);
+            article.getTags().clear();
+            ArticleHandler.getInstance().editar(article);
             responseData.put("currentUser", currentUser);
             responseData.put("tags", TagHandler.getInstance().findAll());
             responseData.put("action", "Edit");
@@ -139,10 +148,16 @@ public class ArticleRoute {
 
             responseData.clear();
             String id = request.params("id");
-
             String title = request.queryParams("title");
             String body = request.queryParams("body");
+            String[] tagNames = request.queryParamsValues("tagName");
+            String[] tagIds = request.queryParamsValues("tagId");
             Article article = ArticleHandler.getInstance().find(id);
+
+            Set<Tag> tags = new HashSet<>();
+            if (tagNames != null && tagIds != null) {
+                for (int i = 0; i < tagIds.length; i++) tags.add(new Tag(tagIds[i], tagNames[i]));
+            }
 
             if ((title == null || title.isEmpty())
                     || (body == null || body.isEmpty())) {
@@ -151,10 +166,31 @@ public class ArticleRoute {
             } else {
                 article.setTitle(title);
                 article.setBody(body);
+                article.setTags(tags);
                 ArticleHandler.getInstance().editar(article);
                 responseData.put("success", "Article posted successfully");
                 response.redirect(String.format("/article/view/%s", article.getId()));
             }
+            return "";
+        });
+
+        post("/articles/:id/like", (request, response) -> {
+            Article article = ArticleHandler.getInstance().find(request.params("id"));
+            User user = request.session().attribute("currentUser");
+            Utils.likeDislike(true, article, user);
+            response.redirect("/article/view/" + request.params("id"));
+            return "";
+        });
+
+        post("/articles/:id/dislike", (request, response) -> {
+            Article article = ArticleHandler.getInstance().find(request.params("id"));
+            User user = request.session().attribute("currentUser");
+            Recommendation recommendation = RecommendationHandler.getInstance().find(new RecommendationId(article, user));
+            RecommendationId recommendationId = new RecommendationId(article, user);
+
+            Utils.likeDislike(false, article, user);
+
+            response.redirect("/article/view/" + request.params("id"));
             return "";
         });
     }

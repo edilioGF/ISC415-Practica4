@@ -21,7 +21,7 @@
                                         <div class="input-group">
                                             <input name="tag" type="text" class="form-control" placeholder="Tag name" maxlength="32">
                                             <div class="input-group-append">
-                                                <button class="btn btn-sm btn-primary" type="button">Register</button>
+                                                <button type="submit" class="btn btn-sm btn-primary">Register</button>
                                             </div>
                                         </div>
                                     </div>

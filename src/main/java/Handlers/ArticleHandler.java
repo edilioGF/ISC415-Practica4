@@ -27,4 +27,14 @@ public class ArticleHandler extends GestionDb<Article> {
         return instance;
     }
 
+    public List<Article> lazyFind(int pageNumber) {
+        EntityManager em = getEntityManager();
+        Query query = em.createQuery("select a from Article a order by date DESC", Article.class);
+        int pageSize = 5;
+        query.setFirstResult((pageNumber - 1) * pageSize);
+        query.setMaxResults(pageSize);
+        List<Article> articlesList = query.getResultList();
+        return articlesList;
+    }
+
 }

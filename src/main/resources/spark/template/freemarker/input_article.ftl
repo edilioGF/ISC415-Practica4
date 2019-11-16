@@ -33,13 +33,12 @@
                                         <div class="form-group">
                                             <div class="col-sm-12 p-0">
                                                 <label for="body">Body</label>
-                                                <textarea id="body" name="body" class="form-control resize-none" rows="14" minlength="300" maxlength="3072" placeholder="Article body">${article.body}</textarea>
+                                                <textarea id="body" name="body" class="form-control resize-none" rows="14" minlength="300" placeholder="Article body">${article.body}</textarea>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <hr>
-                                <#if action == "Write">
                                 <div class="container">
                                     <h4 class="mb-3">Select tags</h4>
                                     <#list tags as tag>
@@ -49,7 +48,6 @@
                                     </#list>
                                 </div>
                                 <div id="tag-holder" class="d-none"></div>
-                                </#if>
                                 <div class="mt-3">
                                     <button type="submit" class="btn btn-primary px-4 py-2">Post</button>
                                 </div>

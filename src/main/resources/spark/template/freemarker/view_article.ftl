@@ -32,6 +32,39 @@
                             <hr>
                             <p class="article-body">${article.body?replace("(\r\n)+", "<br><br>",'r')}</p>
                             <hr>
+                            <#if currentUser??>
+                                <div class="card my-4">
+                                    <h5 class="card-header">Valoraciones</h5>
+                                    <div class="card-body">
+                                        <form action="/articles/${article.id}/like" method="post" style="display: inline-block;">
+                                            <#if like == "null" || like == "false" >
+                                                <button class="like color-grey" name="like" type="submit">
+                                                    <span class="fa fa-thumbs-o-up color-grey" aria-hidden="true">&#128077;</span>
+                                                </button>
+                                            <#else>
+                                                <button class="like" name="like" type="submit">
+                                                    <span class="fa fa-thumbs-o-up" aria-hidden="true">&#128077;</span>
+                                                </button>
+                                            </#if>
+                                        </form>
+                                        <form action="/articles/${article.id}/dislike" method="post"  style="display: inline-block;">
+                                            <#if like == "null" || like == "true" >
+                                                <button class="dislike color-grey" name="dislike" type="submit">
+                                                    <span class="fa fa-thumbs-o-down color-grey" aria-hidden="true">&#128078;</span>
+                                                </button>
+                                            <#else>
+                                                <button class="dislike" name="dislike" type="submit">
+                                                    <span class="fa fa-thumbs-o-down" aria-hidden="true">&#128078;</span>
+                                                </button>
+                                            </#if>
+                                        </form>
+                                        </br>
+                                        <span class="likes-total"><b>${likesTotal}</b> Likes</span>
+                                        <span class="likes-total"><b>${dislikesTotal}</b> Dislikes</span>
+                                    </div>
+                                </div>
+                            </#if>
+                            <hr>
                             <div class="card my-4">
                                 <h5 class="card-header">Tags</h5>
                                 <div class="container mt-2">

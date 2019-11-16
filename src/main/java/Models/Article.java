@@ -12,6 +12,7 @@ public class Article implements Serializable {
     @Id
     private String id;
     private String title;
+    @Column(columnDefinition="TEXT")
     private String body;
     @ManyToOne
     private User author;

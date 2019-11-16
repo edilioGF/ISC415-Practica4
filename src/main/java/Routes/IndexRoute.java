@@ -3,6 +3,7 @@ package Routes;
 import Handlers.ArticleHandler;
 import Handlers.LoginHandler;
 import Handlers.UserHandler;
+import Models.Article;
 import Models.User;
 import Utils.Filters;
 import Utils.Parser;
@@ -10,6 +11,7 @@ import spark.ModelAndView;
 import spark.Session;
 import spark.template.freemarker.FreeMarkerEngine;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static spark.Spark.*;
@@ -23,9 +25,15 @@ public class IndexRoute {
         get("/", (request, response) -> {
 
             responseData.clear();
-
             responseData.put("currentUser", request.session().attribute("currentUser"));
-            responseData.put("articles", ArticleHandler.getInstance().findAll());
+
+            int pageNumber = (request.queryParams("page") != null) ? Integer.parseInt(request.queryParams("page")) : 1;
+            int articles = ArticleHandler.getInstance().findAll().size();
+            List<Article> articlesList = ArticleHandler.getInstance().lazyFind(pageNumber);
+            int totalPages = (int) (Math.ceil((double) articles / 5)) + 1;
+
+            responseData.put("articles", articlesList);
+            responseData.put("pages", totalPages);
 
             return new FreeMarkerEngine().render(new ModelAndView(responseData, "index.ftl"));
         });

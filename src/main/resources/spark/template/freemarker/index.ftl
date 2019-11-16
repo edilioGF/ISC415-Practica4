@@ -34,7 +34,7 @@
                                     </div>
                                 </div>
                                 <div class="panel-body article-body mb-2">
-                                    ${article.body?substring(0,150)}...
+                                    ${article.body?substring(0,300)}...
                                     <a href="/article/view/${article.id}">Read more</a>
                                 </div>
                                 <#list article.tags as tag>
@@ -52,6 +52,13 @@
                     </div>
                 </div>
             </div>
+            <ul class="pagination justify-content-center mb-4">
+                <ul class="pagination">
+                    <#list 1 ..<pages as page_number>
+                        <li class="page-item"><a class="page-link" href="/?page=${page_number}">${page_number}</a></li>
+                    </#list>
+                </ul>
+            </ul>
         </div>
         <#include "partials/general_scripts.ftl" >
     </body>

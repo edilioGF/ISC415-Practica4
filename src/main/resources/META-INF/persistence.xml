@@ -9,6 +9,7 @@
             <class>Models.Tag</class>
             <class>Models.Comment</class>
             <class>Models.Article</class>
+            <class>Models.Recommendation</class>
         <properties>
             <property name="javax.persistence.jdbc.url" value="jdbc:h2:tcp://localhost/~/sparkjavaorm"/>
             <property name="javax.persistence.jdbc.user" value="sa"/>
